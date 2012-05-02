@@ -13,7 +13,7 @@ house_collection = congress_db.wc_house_today
 template = Template(open('post_template.md').read())
 
 
-def parse():
+def parse(ignore_duty=True, ignore_resolutions=True):
     govfeed = feedparser.parse('http://www.govtrack.us/events/events.rss?'
                                'feeds=misc%3Aintroducedbills')
 
@@ -33,11 +33,11 @@ def parse():
             logging.info("Already created story: {}".format(entry['title']))
             continue
 
-        if 'duty' in entry['title'] and 'temporar' in entry['title']:
+        if ignore_duty and 'duty' in entry['title'] and 'temporar' in entry['title']:
             logging.info("Ignored boring bill: {}".format(entry['title']))
             continue
 
-        if '.Res' in entry['title']:
+        if ignore_resolutions and '.Res' in entry['title']:
             logging.info("Ignored resolution: {}".format(entry['title']))
             continue
 
