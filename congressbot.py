@@ -2,6 +2,7 @@
 import logging
 import feedparser
 import time
+import urllib
 from jinja2 import Template
 from pymongo import Connection
 from reddit import Reddit
@@ -29,7 +30,7 @@ def parse(ignore_duty=True, ignore_resolutions=True):
             logging.info("No title for bill: {}".format(entry['guid']))
             continue
 
-        if house_collection.find_one({'guid': entry['guid']}):
+        if False and house_collection.find_one({'guid': entry['guid']}):
             logging.info("Already created story: {}".format(entry['title']))
             continue
 
@@ -48,15 +49,29 @@ def parse(ignore_duty=True, ignore_resolutions=True):
             'guid': entry['guid'],
         }
 
+        bill_number = entry['title'].split(':')[0]
+        news_stories = find_news_stories(bill_number)
+
         try:
             text = template.render(description=entry['description'],
-                                   link=entry['link'])
+                                   link=entry['link'],
+                                   news_stories=news_stories)
+            print text
             r.submit('watchingcongress', entry['title'], text=text)
             house_collection.insert(record)
             logging.info("Created story: {}".format(entry['title']))
         except Exception as e:
             logging.error("Exception occured: {}".format(unicode(e)))
             time.sleep(2)
+
+
+def find_news_stories(query):
+    query = urllib.quote_plus(query)
+    news_feed = feedparser.parse('https://news.google.com/news/feeds?q="%s"' % query)
+    return [{'title': entry['title'],
+             'link': entry['link'][entry['link'].find('url=') + 4:]}
+            for entry in news_feed.entries
+            if '(subscription)' not in entry['title']]
 
 
 if __name__ == '__main__':
