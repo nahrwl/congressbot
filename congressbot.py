@@ -56,7 +56,6 @@ def parse(ignore_duty=True, ignore_resolutions=True):
             text = template.render(description=entry['description'],
                                    link=entry['link'],
                                    news_stories=news_stories)
-            print text
             r.submit('watchingcongress', entry['title'], text=text)
             house_collection.insert(record)
             logging.info("Created story: {}".format(entry['title']))
@@ -68,10 +67,12 @@ def parse(ignore_duty=True, ignore_resolutions=True):
 def find_news_stories(query):
     query = urllib.quote_plus(query)
     news_feed = feedparser.parse('https://news.google.com/news/feeds?q="%s"' % query)
-    return [{'title': entry['title'],
-             'link': entry['link'][entry['link'].find('url=') + 4:]}
-            for entry in news_feed.entries
-            if '(subscription)' not in entry['title']]
+    news_items = []
+    for entry in news_feed.entries:
+        if '(subscription)' not in entry['title']: # ignore subscription results
+            link = entry['link'][entry['link'].find('url=') + 4:]
+            news_items.append({'title': entry['title'], 'link': link})
+    return news_items
 
 
 if __name__ == '__main__':
