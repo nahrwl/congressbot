@@ -30,7 +30,7 @@ def parse(ignore_duty=True, ignore_resolutions=True):
             logging.info("No title for bill: {}".format(entry['guid']))
             continue
 
-        if False and house_collection.find_one({'guid': entry['guid']}):
+        if house_collection.find_one({'guid': entry['guid']}):
             logging.info("Already created story: {}".format(entry['title']))
             continue
 
