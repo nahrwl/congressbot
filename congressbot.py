@@ -26,19 +26,19 @@ def parse(ignore_duty=True, ignore_resolutions=True):
       continue
 
     if not entry['title']:
-      logging.info("No title for bill: {}".format(entry['guid']))
+      logging.info("No title for bill: {0}".format(entry['guid']))
       continue
 
     if house_collection.find_one({'guid': entry['guid']}):
-      logging.info("Already created story: {}".format(entry['title']))
+      logging.info("Already created story: {0}".format(entry['title']))
       continue
 
     if ignore_duty and 'duty' in entry['title'] and 'temporar' in entry['title']:
-      logging.info("Ignored boring bill: {}".format(entry['title']))
+      logging.info("Ignored boring bill: {0}".format(entry['title']))
       continue
 
     if ignore_resolutions and '.Res' in entry['title']:
-      logging.info("Ignored resolution: {}".format(entry['title']))
+      logging.info("Ignored resolution: {0}".format(entry['title']))
       continue
 
     record = {
@@ -57,9 +57,9 @@ def parse(ignore_duty=True, ignore_resolutions=True):
                    news_stories=news_stories)
       r.submit('watchingcongress', entry['title'], text=text)
       house_collection.insert(record)
-      logging.info("Created story: {}".format(entry['title']))
+      logging.info("Created story: {0}".format(entry['title']))
     except Exception as e:
-      logging.error("Exception occured: {}".format(unicode(e)))
+      logging.error("Exception occured: {0}".format(unicode(e)))
       time.sleep(2)
 
 def find_news_stories(query):
