@@ -1,7 +1,7 @@
 {{description}}
 
 [Govtrack.us Summary]({{link}})
-{% if news_stories|length > 0 %}
+{% if news_stories %}
 
 Recent News:
 

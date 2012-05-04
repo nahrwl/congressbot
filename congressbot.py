@@ -49,7 +49,11 @@ def parse(ignore_duty=True, ignore_resolutions=True):
     }
 
     bill_number = entry['title'].split(':')[0]
-    news_stories = find_news_stories(bill_number)
+    try:
+      news_stories = find_news_stories(bill_number)
+    except Exception as e:
+      news_stories = []
+      logging.error("Couldn't parse Google News: {}".format(unicode(e)))
 
     try:
       text = template.render(description=entry['description'],
