@@ -18,7 +18,7 @@ def parse(ignore_duty=True, ignore_resolutions=True):
     'feeds=misc%3Aintroducedbills')
 
   r = Reddit(user_agent='WatchingCongress/1.0')
-  r.login('congressbot', '<BOTPASS>')
+  r.login('FuturistBot', '<BOTPASS>')
 
   for entry in govfeed.entries:
     if not entry['guid'].find('guid'):
@@ -59,7 +59,7 @@ def parse(ignore_duty=True, ignore_resolutions=True):
       text = template.render(description=entry['description'],
                    link=entry['link'],
                    news_stories=news_stories)
-      r.submit('watchingcongress', entry['title'], text=text)
+      r.submit('futuristparty', entry['title'], text=text)
       house_collection.insert(record)
       logging.info("Created story: {0}".format(entry['title']))
     except Exception as e:
